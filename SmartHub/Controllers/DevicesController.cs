@@ -24,7 +24,9 @@ namespace SmartHub.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Device>>> GetDevices()
         {
-            return await _context.Devices.ToListAsync();
+            List<Device> devices = await _context.Devices.ToListAsync();
+            return devices;
+
         }
 
         // GET: api/Devices/5

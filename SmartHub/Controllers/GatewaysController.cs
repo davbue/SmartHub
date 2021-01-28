@@ -32,12 +32,11 @@ namespace SmartHub.Controllers
         public async Task<ActionResult<Gateway>> GetGateway(long id)
         {
             var gateway = await _context.Gateways.FindAsync(id);
-
+            
             if (gateway == null)
             {
                 return NotFound();
             }
-
             return gateway;
         }
 

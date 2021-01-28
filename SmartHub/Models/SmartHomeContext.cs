@@ -49,6 +49,7 @@ namespace SmartHub.Models
             modelBuilder.Entity<DeviceType>(entity =>
             {
                 entity.HasKey(e => e.DeviceTypeID);
+                entity.Property(e => e.DeviceTypeName);
             });
         }
     }

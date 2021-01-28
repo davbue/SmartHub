@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHub.Models;
 
-namespace SmartHub.Controllers
+namespace SmartHomeServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
