@@ -24,9 +24,10 @@ namespace SmartHub.Models
 
             modelBuilder.Entity<Device>(entity =>
             {
-                entity.HasKey(e => e.DeviceID);
+                entity.HasKey(e => e.DeviceId);
                 entity.Property(e => e.DeviceName).IsRequired();
                 entity.Property(e => e.Enabled).IsRequired();
+                entity.Property(e => e.Pins);
                 entity.HasOne(d => d.Gateway)
                     .WithMany(p => p.Devices);
                 entity.HasOne(d => d.DeviceType)
@@ -35,21 +36,25 @@ namespace SmartHub.Models
 
             modelBuilder.Entity<Gateway>(entity =>
             {
-                entity.HasKey(e => e.GatewayID);
+                entity.HasKey(e => e.GatewayId);
                 entity.HasOne(d => d.Room)
                   .WithMany(p => p.Gateways);
+                entity.Property(e => e.Online);
             });
 
             modelBuilder.Entity<Room>(entity =>
             {
-                entity.HasKey(e => e.RoomID);
+                entity.HasKey(e => e.RoomId);
                 entity.Property(e => e.RoomName).IsRequired();
             });
 
             modelBuilder.Entity<DeviceType>(entity =>
             {
-                entity.HasKey(e => e.DeviceTypeID);
+                entity.HasKey(e => e.DeviceTypeId);
                 entity.Property(e => e.DeviceTypeName);
+                entity.Property(e => e.Icon);
+                entity.Property(e => e.Unit);
+                entity.Property(e => e.Sensor);
             });
         }
     }

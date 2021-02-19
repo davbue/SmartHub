@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using SmartHub.Clients;
 using SmartHub.Models;
+using SmartHub.Services;
 
 namespace SmartHub.Controllers
 {
@@ -14,26 +17,26 @@ namespace SmartHub.Controllers
     public class DevicesController : ControllerBase
     {
         private readonly SmartHomeContext _context;
+        private readonly IMqttClientService mqttClientService;
 
-        public DevicesController(SmartHomeContext context)
+        public DevicesController(SmartHomeContext context, MqttClientServiceProvider provider)
         {
             _context = context;
+            mqttClientService = provider.MqttClientService;
         }
 
         // GET: api/Devices
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Device>>> GetDevices()
         {
-            List<Device> devices = await _context.Devices.ToListAsync();
-            return devices;
-
+            return await _context.Devices.ToListAsync();
         }
 
         // GET: api/Devices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Device>> GetDevice(long id)
+        public async Task<ActionResult<Device>> GetDevice(string id)
         {
-            Device device = await _context.Devices.FindAsync(id);
+            var device = await _context.Devices.FindAsync(id);
 
             if (device == null)
             {
@@ -47,9 +50,9 @@ namespace SmartHub.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDevice(long id, Device device)
+        public async Task<IActionResult> PutDevice(string id, Device device)
         {
-            if (id != device.DeviceID)
+            if (id != device.DeviceId)
             {
                 return BadRequest();
             }
@@ -59,6 +62,23 @@ namespace SmartHub.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                DeviceConfig deviceConfig = new DeviceConfig
+                {
+                    DeviceId = device.DeviceId,
+                    DeviceTypeId = device.DeviceTypeId,
+                    Pins = device.Pins.Split(',').Select(Int32.Parse).ToList(),
+                    Enabled = device.Enabled
+                };
+
+                MqttConfigMessage configMessage = new MqttConfigMessage
+                {
+                    GatewayId = device.GatewayId,
+                    DeviceConfigs = new List<DeviceConfig>()
+                };
+                configMessage.DeviceConfigs.Add(deviceConfig);
+
+                string payload = JsonConvert.SerializeObject(configMessage);
+                await mqttClientService.PublishMessageAsync($"{device.GatewayId}/update/config", payload);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -82,14 +102,45 @@ namespace SmartHub.Controllers
         public async Task<ActionResult<Device>> PostDevice(Device device)
         {
             _context.Devices.Add(device);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                DeviceConfig deviceConfig = new DeviceConfig
+                {
+                    DeviceId = device.DeviceId,
+                    DeviceTypeId = device.DeviceTypeId,
+                    Pins = device.Pins.Split(',').Select(Int32.Parse).ToList()
+                };
 
-            return CreatedAtAction("GetDevice", new { id = device.DeviceID }, device);
+                MqttConfigMessage configMessage = new MqttConfigMessage
+                {
+                    GatewayId = device.GatewayId,
+                    DeviceConfigs = new List<DeviceConfig>()
+                };
+                configMessage.DeviceConfigs.Add(deviceConfig);
+
+                string payload = JsonConvert.SerializeObject(configMessage);
+                await mqttClientService.PublishMessageAsync($"{device.GatewayId}/update/config", payload);
+            }
+            catch (DbUpdateException)
+            {
+                if (DeviceExists(device.DeviceId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            
+
+            return CreatedAtAction("GetDevice", new { id = device.DeviceId }, device);
         }
 
         // DELETE: api/Devices/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Device>> DeleteDevice(long id)
+        public async Task<ActionResult<Device>> DeleteDevice(string id)
         {
             var device = await _context.Devices.FindAsync(id);
             if (device == null)
@@ -100,12 +151,29 @@ namespace SmartHub.Controllers
             _context.Devices.Remove(device);
             await _context.SaveChangesAsync();
 
+            DeviceConfig deviceConfig = new DeviceConfig
+            {
+                DeviceId = device.DeviceId,
+                DeviceTypeId = device.DeviceTypeId,
+                Delete = true
+            };
+
+            MqttConfigMessage configMessage = new MqttConfigMessage
+            {
+                GatewayId = device.GatewayId,
+                DeviceConfigs = new List<DeviceConfig>()
+            };
+            configMessage.DeviceConfigs.Add(deviceConfig);
+
+            string payload = JsonConvert.SerializeObject(configMessage);
+            await mqttClientService.PublishMessageAsync($"{device.GatewayId}/update/config", payload);
+
             return device;
         }
 
-        private bool DeviceExists(long id)
+        private bool DeviceExists(string id)
         {
-            return _context.Devices.Any(e => e.DeviceID == id);
+            return _context.Devices.Any(e => e.DeviceId == id);
         }
     }
 }

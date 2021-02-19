@@ -7,10 +7,9 @@ namespace SmartHub.Models
 {
     public class DataEntity
     {
-        public long GatewayID { get; set; }
-        public long DeviceID { get; set; }
-        public int Value { get; set; }
-        public string Unit { get; set; }
+        public string DeviceId { get; set; }
+        public float Value { get; set; }
+        public long DeviceTypeId { get; set; }
         public bool Enabled { get; set; }
     }
 }

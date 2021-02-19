@@ -1,21 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj": {}
+    "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj": {}
   },
   "projects": {
-    "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj": {
+    "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj",
+        "projectUniqueName": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj",
         "projectName": "SmartHub",
-        "projectPath": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj",
+        "projectPath": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj",
         "packagesPath": "C:\\Users\\davbu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\obj\\",
+        "outputPath": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
           "C:\\Users\\davbu\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -43,6 +47,14 @@
             "InfluxDB.Client": {
               "target": "Package",
               "version": "[1.14.0, )"
+            },
+            "MQTTnet": {
+              "target": "Package",
+              "version": "[3.0.14, )"
+            },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",

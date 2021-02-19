@@ -7,7 +7,7 @@ namespace SmartHub.Models
 {
     public class Room
     {
-        public long RoomID { get; set; }
+        public string RoomId { get; set; }
         public string RoomName { get; set; }
 
         //Navigation Properties

@@ -1,67 +1,54 @@
 ﻿using System;
-using SmartHub.Models;
+using System.Threading.Tasks;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Core;
 using InfluxDB.Client.Writes;
-using System.Threading.Tasks;
+using SmartHub.Models;
 
 namespace SmartHub.Clients
 {
     public class InfluxDBClient
     {
-        private static readonly char[] Token = "".ToCharArray();
+        private InfluxDB.Client.InfluxDBClient Client;
+        private string Bucket;
+        private string Org;
+        private string Token;
 
         public InfluxDBClient()
-        { 
+        {
+            // You can generate a Token from the "Tokens Tab" in the UI
+            Token = "zBEeGlQ0k5icC4zVr87uzys6pNaU9b41SUG7PyGHP1tjJ2vA4lecnNzghpI2ztThNx7DhWGQo_YCK2mV9pPqcA==";
+            Bucket = "SmartHub";
+            Org = "SmartHub";
+
+            Client = InfluxDBClientFactory.Create("http://localhost:8086", Token.ToCharArray());
         }
 
-        public async Task WritePoint(DataEntity dataEntity)
+        public void WritePoint(DataEntity dataEntity)
         {
-            var influxDBClient = InfluxDBClientFactory.Create("http://localhost:8086");
+            SmartHomeContext context = new SmartHomeContext();
+            string unit = context.DeviceTypes.Find(dataEntity.DeviceTypeId).Unit;
+            var point = PointData
+                .Measurement(unit)
+                .Tag("DeviceId", dataEntity.DeviceId)
+                .Tag("Enabled", dataEntity.Enabled.ToString())
+                .Field("Value", (float)(dataEntity.Value))
+                .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
 
-            //
-            // Write Data
-            //
-            using (var writeApi = influxDBClient.GetWriteApi())
+            using (var writeApi = Client.GetWriteApi())
             {
-                //
-                // Write by Point
-                //
-                var point = PointData.Measurement(dataEntity.Unit)
-                    .Tag("deviceid", dataEntity.DeviceID.ToString())
-                    .Tag("gatewayid", dataEntity.GatewayID.ToString())
-                    .Field("value", dataEntity.Value)
-                    .Timestamp(DateTime.UtcNow.AddSeconds(-10), WritePrecision.Ns);
-
-                writeApi.WritePoint("smarthome", "org_id", point);
+                writeApi.WritePoint(Bucket, Org, point);
             }
-
-            
-
-            influxDBClient.Dispose();
         }
-
-        public async Task<DataEntity> WritePoint()
+        
+        public async Task<float> GetLastValue(string deviceId)
         {
-            var influxDBClient = InfluxDBClientFactory.Create("http://localhost:8086");
-            DataEntity dataEntity = new DataEntity();
-            //
-            // Query data
-            //
-            var flux = "from(bucket:\"temperature-sensors\") |> range(start: 0)";
-
-            var fluxTables = await influxDBClient.GetQueryApi().QueryAsync(flux, "org_id");
-            fluxTables.ForEach(fluxTable =>
-            {
-                var fluxRecords = fluxTable.Records;
-                fluxRecords.ForEach(fluxRecord =>
-                {
-                    
-                });
-            });
-            influxDBClient.Dispose();
-            return dataEntity;
-        } 
+            //var query = $"from(bucket: \"SmartHub\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r[\"_measurement\"] == \"bit\") |> filter(fn: (r) => r[\"DeviceId\"] == \"1\") |> last()";
+            var query = $"from(bucket:\"{Bucket}\") |> range(start: -7d) |> filter(fn: (r) => r.DeviceId == \"{deviceId}\") |> last()";
+            var fluxTables = await Client.GetQueryApi().QueryAsync(query, Org);
+            double value = Convert.ToDouble(fluxTables[0].Records[0].GetValue());
+            return (float)value;
+        }
     }
 }

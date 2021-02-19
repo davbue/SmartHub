@@ -7,11 +7,12 @@ namespace SmartHub.Models
 {
     public class Device
     {
-        public long DeviceID { get; set; }
+        public string DeviceId { get; set; }
         public string DeviceName { get; set; }
         public bool Enabled { get; set; }
-        public long GatewayID { get; set; }
-        public long DeviceTypeID { get; set; }
+        public string GatewayId { get; set; }
+        public long DeviceTypeId { get; set; }
+        public string Pins { get; set; }
 
         //Navigation Properties
         public Gateway Gateway { get; set; }

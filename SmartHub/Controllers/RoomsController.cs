@@ -29,7 +29,7 @@ namespace SmartHub.Controllers
 
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Room>> GetRoom(long id)
+        public async Task<ActionResult<Room>> GetRoom(string id)
         {
             var room = await _context.Rooms.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace SmartHub.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRoom(long id, Room room)
+        public async Task<IActionResult> PutRoom(string id, Room room)
         {
-            if (id != room.RoomID)
+            if (id != room.RoomId)
             {
                 return BadRequest();
             }
@@ -80,14 +80,28 @@ namespace SmartHub.Controllers
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
             _context.Rooms.Add(room);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (RoomExists(room.RoomId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return CreatedAtAction("GetRoom", new { id = room.RoomID }, room);
+            return CreatedAtAction("GetRoom", new { id = room.RoomId }, room);
         }
 
         // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Room>> DeleteRoom(long id)
+        public async Task<ActionResult<Room>> DeleteRoom(string id)
         {
             var room = await _context.Rooms.FindAsync(id);
             if (room == null)
@@ -101,9 +115,9 @@ namespace SmartHub.Controllers
             return room;
         }
 
-        private bool RoomExists(long id)
+        private bool RoomExists(string id)
         {
-            return _context.Rooms.Any(e => e.RoomID == id);
+            return _context.Rooms.Any(e => e.RoomId == id);
         }
     }
 }

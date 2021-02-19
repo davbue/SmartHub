@@ -7,8 +7,11 @@ namespace SmartHub.Models
 {
     public class DeviceType
     {
-        public long DeviceTypeID { get; set; }
+        public long DeviceTypeId { get; set; }
         public string DeviceTypeName { get; set; }
+        public string Icon { get; set; }
+        public string Unit { get; set; }
+        public bool Sensor { get; set; }
 
         //Navigation Properties
         public ICollection<Device> Devices { get; set; }

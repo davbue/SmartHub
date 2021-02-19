@@ -29,14 +29,15 @@ namespace SmartHub.Controllers
 
         // GET: api/Gateways/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Gateway>> GetGateway(long id)
+        public async Task<ActionResult<Gateway>> GetGateway(string id)
         {
             var gateway = await _context.Gateways.FindAsync(id);
-            
+
             if (gateway == null)
             {
                 return NotFound();
             }
+
             return gateway;
         }
 
@@ -44,9 +45,9 @@ namespace SmartHub.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGateway(long id, Gateway gateway)
+        public async Task<IActionResult> PutGateway(string id, Gateway gateway)
         {
-            if (id != gateway.GatewayID)
+            if (id != gateway.GatewayId)
             {
                 return BadRequest();
             }
@@ -79,14 +80,28 @@ namespace SmartHub.Controllers
         public async Task<ActionResult<Gateway>> PostGateway(Gateway gateway)
         {
             _context.Gateways.Add(gateway);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (GatewayExists(gateway.GatewayId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return CreatedAtAction("GetGateway", new { id = gateway.GatewayID }, gateway);
+            return CreatedAtAction("GetGateway", new { id = gateway.GatewayId }, gateway);
         }
 
         // DELETE: api/Gateways/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Gateway>> DeleteGateway(long id)
+        public async Task<ActionResult<Gateway>> DeleteGateway(string id)
         {
             var gateway = await _context.Gateways.FindAsync(id);
             if (gateway == null)
@@ -100,9 +115,9 @@ namespace SmartHub.Controllers
             return gateway;
         }
 
-        private bool GatewayExists(long id)
+        private bool GatewayExists(string id)
         {
-            return _context.Gateways.Any(e => e.GatewayID == id);
+            return _context.Gateways.Any(e => e.GatewayId == id);
         }
     }
 }

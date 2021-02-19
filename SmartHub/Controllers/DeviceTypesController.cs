@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHub.Models;
 
-namespace SmartHomeServer.Controllers
+namespace SmartHub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -47,7 +47,7 @@ namespace SmartHomeServer.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeviceType(long id, DeviceType deviceType)
         {
-            if (id != deviceType.DeviceTypeID)
+            if (id != deviceType.DeviceTypeId)
             {
                 return BadRequest();
             }
@@ -82,7 +82,7 @@ namespace SmartHomeServer.Controllers
             _context.DeviceTypes.Add(deviceType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDeviceType", new { id = deviceType.DeviceTypeID }, deviceType);
+            return CreatedAtAction("GetDeviceType", new { id = deviceType.DeviceTypeId }, deviceType);
         }
 
         // DELETE: api/DeviceTypes/5
@@ -103,7 +103,7 @@ namespace SmartHomeServer.Controllers
 
         private bool DeviceTypeExists(long id)
         {
-            return _context.DeviceTypes.Any(e => e.DeviceTypeID == id);
+            return _context.DeviceTypes.Any(e => e.DeviceTypeId == id);
         }
     }
 }
