@@ -55,7 +55,7 @@ namespace SmartHub.Clients
         public async Task ConnectAsync()
         {
             var options = new MqttClientOptionsBuilder()
-                .WithTcpServer("localhost", 1883) // Port is optional
+                .WithTcpServer("192.168.43.62", 1883) // Port is optional
                 .Build();
             await Client.ConnectAsync(options, CancellationToken.None);
 

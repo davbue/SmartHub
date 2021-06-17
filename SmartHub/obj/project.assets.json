@@ -10295,11 +10295,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj",
+      "projectUniqueName": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj",
       "projectName": "SmartHub",
-      "projectPath": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj",
+      "projectPath": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj",
       "packagesPath": "C:\\Users\\davbu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\obj\\",
+      "outputPath": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -10389,7 +10389,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
       }
     }
   }

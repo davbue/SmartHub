@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RnnJT25/nk8mwNwiGP6fhzYJTXVWR0EeEYqQtONl2Acve/xocsQyhpLAsyw0lf5etCXt4f8EJqckjCliC0J3cw==",
+  "dgSpecHash": "rKLNlQ8pHgzyPD0/rZmLe2SA3qFp6DZopB+wmeDvGFKAhtZaQ/gQYw0MQ1vVImaa9pqsyBWjt/e3clt6Ef5m6w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\davbu\\source\\repos\\SmartHub_old\\SmartHub\\SmartHub.csproj",
+  "projectFilePath": "C:\\Users\\davbu\\source\\repos\\SmartHub\\SmartHub\\SmartHub.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\davbu\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
     "C:\\Users\\davbu\\.nuget\\packages\\csvhelper\\15.0.4\\csvhelper.15.0.4.nupkg.sha512",
